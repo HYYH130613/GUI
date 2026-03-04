@@ -1,5 +1,5 @@
-*
-.gitignore,
-out/,
-.idea/
-*
+ *
+ .gitignore,
+ .idea/,
+ out/
+ *
