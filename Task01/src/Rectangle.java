@@ -1,21 +1,36 @@
+import java.awt.*;
+
 public class Rectangle {
-    int width;
-    int height;
+    int x;
+    int y;
 
     public Rectangle(int width, int height) {
+        this.x = width;
+        this.y = height;
+    }
+
+    public void draw(String file){
+        String figure = file;
         try{
 
-        this.width = width;
-        this.height = height;
+            if(x == y){
+                figure = "Square";
+            }
+            else{
+                figure = "Rectangle";
+            }
 
-        if(width == 0 || height == 0){
-            throw new Exception("Invalid values!");
-        }
+            if(x < 0 || y < 0){
+                throw new Exception("Invalid "+figure+"!");
+            }
+
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
         finally{
-            System.out.println("Rectangle " + width + "x" + height);
+            System.out.println(
+                    figure +" "+ x + "x" + y
+            );
         }
     }
 
