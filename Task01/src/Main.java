@@ -2,14 +2,22 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Rectangle[] rect = {
+                    new Rectangle(2, 3),
+                    new Rectangle(0, 3),
+                    new CharRectangle(4, 'a', 'e'),        // three-parameter constructor
+                    new CharRectangle(5, 3, '*', '+'),    // four-parameter constructor
+                    new CharRectangle(1, 2, 'a', 'a'),
+                    new CharRectangle(3, 3, '+', 'x'),
+                    new CharRectangle(1, 2, 'x', 'y'),
+                    new CharRectangle(3, 4, '^', '$')
+            };
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+            for (Rectangle r : rect)                        // for (int i = 0; i < rect.length; i++)
+                try {
+                    r.draw("file");                                        // rect[i].draw("file");
+                } catch(RectangleException e) {
+                System.out.println(e.getMessage());
+                }
     }
 }

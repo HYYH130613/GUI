@@ -9,28 +9,21 @@ public class Rectangle {
         this.y = height;
     }
 
-    public void draw(String file){
-        String figure = file;
-        try{
+    public void draw(String file) throws RectangleException {
+        String figure = "";
 
-            if(x == y){
-                figure = "Square";
-            }
-            else{
-                figure = "Rectangle";
-            }
-
-            if(x < 0 || y < 0){
-                throw new Exception("Invalid "+figure+"!");
-            }
-
-        }catch(Exception e){
-            System.out.println(e.getMessage());
+        if (x == y) {
+            figure = "Square";
+        } else {
+            figure = "Rectangle";
         }
-        finally{
-            System.out.println(
-                    figure +" "+ x + "x" + y
-            );
+
+        System.out.println(
+                figure + " " + x + " x " + y
+        );
+
+        if (x < 1 || y < 1) {
+            throw new RectangleException("Invalid rectangle!");
         }
     }
 
