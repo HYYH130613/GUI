@@ -1,4 +1,4 @@
-public class FixedAmountDiscount extends DIscount{
+public class FixedAmountDiscount extends Discount {
 
     private double amount;
 

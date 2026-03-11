@@ -1,4 +1,4 @@
-public class PrecentageDiscount extends DIscount{
+public class PrecentageDiscount extends Discount {
 
     private double precentage;
 

@@ -9,8 +9,8 @@ public class Main {
         System.out.println(out2);
 
 
-        DIscount dis = new PrecentageDiscount(50);
-        DIscount dis2 = new FixedAmountDiscount(44);
+        Discount dis = new PrecentageDiscount(50);
+        Discount dis2 = new FixedAmountDiscount(44);
 
         System.out.println(dis.apply(13.4));
         System.out.println(dis2.apply(13.4));

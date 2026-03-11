@@ -1,7 +1,7 @@
-abstract class DIscount {
+abstract class Discount {
     private final String description;
 
-    DIscount(String description) {
+    Discount(String description) {
         if (description == null || description.isEmpty()) {
             throw new IllegalArgumentException("Discount cannot be null or empty");
         } else {
