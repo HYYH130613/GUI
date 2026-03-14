@@ -51,6 +51,10 @@ public class Order {
         return count;
     }
 
+    public int getLineCount(){
+        return items.length;
+    }
+
     public double calculateSubtotal(){
         double sum = 0;
         for(OrderItem item : items){
@@ -166,7 +170,7 @@ public class Order {
         }
     }
 
-    class Builder {
+    static class Builder {
         private final static int INITIAL_CAPACITY = 4;
         private final int id;
         private final Customer customer;

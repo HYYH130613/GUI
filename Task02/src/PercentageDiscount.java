@@ -1,8 +1,8 @@
-public class PrecentageDiscount extends Discount {
+public class PercentageDiscount extends Discount {
 
     private double precentage;
 
-    PrecentageDiscount(double p){
+    public PercentageDiscount(double p){
         super(String.format("%.2f", p));
 
         if(p > 0 && p <= 100){

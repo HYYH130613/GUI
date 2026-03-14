@@ -58,7 +58,7 @@ public class Cafe {
         return true;
     }
 
-    public Product[] getProductByCategory(String category){
+    public Product[] getProductsByCategory(String category){
         int counter = 0;
         for(int i = 0; i < menuSize; i++){
             if(menu[i].category().equalsIgnoreCase(category)){
@@ -76,7 +76,7 @@ public class Cafe {
     }
 
     public void sortMenuByPrice(){
-        for(int i = 1; i<menuSize-1; i++){
+        for(int i = 1; i<menuSize-2; i++){
             Product key = menu[i];
             int j = i+1;
             while(j > 1 && menu[j].price() > key.price()){
@@ -101,7 +101,7 @@ public class Cafe {
         }
         if(orderCount == orders.length){
             Order[] temp = new Order[orders.length * 2];
-            for(int i = 0; i < orderCount; i++){
+            for(int i = 0; i < orderCount-1; i++){
                 temp[i] = orders[i];
             }
             orders = temp;
@@ -111,7 +111,7 @@ public class Cafe {
 
     public Order[] getOrdersByCustomer(String customerName){
         int count = 0;
-        for(int i = 0; i < orderCount; i++){
+        for(int i = 0; i < orderCount-1; i++){
             if(orders[i].getCustomer().name().equalsIgnoreCase(customerName)){
                 count++;
             }
@@ -128,7 +128,7 @@ public class Cafe {
         return newOrders;
     }
 
-    public void sortOrderByTotal(){
+    public void sortOrdersByTotal(){
         Order temp;
         for(int i = 0; i < orderCount; i++){
             for(int j = 0; j < i+1; j++){
