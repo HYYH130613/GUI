@@ -1,32 +1,31 @@
 public class PercentageDiscount extends Discount {
 
-    private double precentage;
+    private final double percentage;
 
     public PercentageDiscount(double p){
-        super(String.format("%.2f", p));
+        super(String.format("%.2f%%", p));
 
-        if(p > 0 && p <= 100){
-            this.precentage = p;
-        }else{
-            throw new IllegalArgumentException("Discount percentage must be in the range (0, 100]. Received: "+precentage);
+        this.percentage = p;
+
+        if(p <= 0 || p > 100){
+            throw new IllegalArgumentException("Discount percentage must be in the range (0, 100]. Received: "+ percentage);
         }
     }
 
-    public double getPrecentage(){
-        return precentage;
+    public double getPercentage(){
+        return percentage;
     }
 
     @Override
     public double apply(double originalPrice){
 
-        if(Math.max(originalPrice, 0) == 0){
+        if(originalPrice < 0){
             throw new IllegalArgumentException("Original price less than zero: "+originalPrice);
         }
 
-        double discount = originalPrice * (1-precentage/100.0);
-
-        return Math.max(discount, 0);
-
+        double discounted = originalPrice * (1 - percentage / 100.0);
+        discounted = Math.max(discounted, 0);
+        return discounted;
     }
 
 }

@@ -1,26 +1,25 @@
 public class FixedAmountDiscount extends Discount {
 
-    private double amount;
+    private final double amount;
 
     public FixedAmountDiscount(double amount){
 
         super(String.format("%.2f", amount));
 
         if(amount < 0){
-            throw new IllegalArgumentException("Amount cannot be negative" + amount);
+            throw new IllegalArgumentException("Amount cannot be negative " + amount);
         }
-        else{
-            this.amount = amount;
-        }
+        this.amount = amount;
     }
 
     @Override
     public double apply(double originalPrice){
-        if(Math.max(originalPrice, 0) == 0){
+        if(originalPrice < 0){
             throw new IllegalArgumentException("Original price less than zero: "+originalPrice);
         }
-        double sub = originalPrice - amount;
-        return Math.max(sub, 0);
+        double discounted = originalPrice - amount;
+        discounted = Math.max(discounted, 0);
+        return discounted;
     }
 
 }

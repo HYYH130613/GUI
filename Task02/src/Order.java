@@ -64,7 +64,7 @@ public class Order {
     }
 
     public double calculateTotal(){
-        double subtotal=0;
+        double subtotal=calculateSubtotal();
         if(discount != null){
             return discount.apply(subtotal);
         }
@@ -95,7 +95,7 @@ public class Order {
         }
 
         private String formatLine(String label, double amount){
-            String left = label + ": ";
+            String left = label + " ";
             String right = String.format("%.2f PLN", amount);
 
             int space = WIDTH - right.length() - left.length();
@@ -105,7 +105,7 @@ public class Order {
         }
 
         private String formatNegLine(String label, double amount){
-            String left = label + ": ";
+            String left = label + " ";
             String right = String.format("- %.2f", amount);
 
             int space = WIDTH - right.length() - left.length();
@@ -128,17 +128,12 @@ public class Order {
             sb.append(h2).append("\n");
 
             DateTimeFormatter date = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
-            sb.append(date.format(createdAt))
+            sb.append("Date: "+date.format(createdAt))
+                    .append("\nCashier: "+cachierName)
+                    .append("\nOrder: #"+getId())
+                    .append("\nCustomer: "+customer.name()+"["+customer.loyaltyLevel()+"]")
                     .append("\n")
-                    .append(cachierName)
-                    .append("\n")
-                    .append(getId())
-                    .append("\n")
-                    .append(customer.name())
-                    .append("\n")
-                    .append(customer.loyaltyLevel())
-                    .append("\n")
-                    .append(" ");
+                    .append("\n");
 
             for(OrderItem item : items){
                 sb.append(item.formatted())
@@ -149,20 +144,25 @@ public class Order {
                     .append(h2)
                     .append("\n");
             double subtotal = calculateSubtotal();
-            sb.append( formatLine("Subtotal:", subtotal))
+            sb.append(formatLine("Subtotal: ", subtotal))
                     .append("\n");
             if(discount != null){
                 double savings = discount.savings(subtotal);
                 sb.append(formatNegLine("Discount: " + discount.getDescription(), savings))
                         .append("\n");
             }
+
+            total = WIDTH-"Thank you!".length();
+            left = total/2;
+            right = total-left;
+
             sb.append(h2)
                     .append("\n")
-                    .append(formatLine("TOTAL DUE:", calculateTotal()))
+                    .append(formatLine("TOTAL DUE: ", calculateTotal()))
                     .append("\n")
                     .append(h1)
                     .append("\n")
-                    .append("Thank you!")
+                    .append(" ".repeat(left)+"Thank you!"+" ".repeat(right))
                     .append("\n")
                     .append(h1);
 

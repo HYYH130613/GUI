@@ -37,24 +37,23 @@ public class Cafe {
         menu[menuSize++] = product;
     }
 
-    public Boolean removeProduct(String productName){
+    public boolean removeProduct(String productName) {
         int index = -1;
-        for(int i = 0; i < menuSize; i++){
-            if(menu[i].name().equalsIgnoreCase(productName)){
+        for (int i = 0; i < menuSize; i++) {
+            if (menu[i].name().equalsIgnoreCase(productName)) {
                 index = i;
                 break;
             }
         }
-        if(index == -1){return false;}
-//        if(index == menuSize-1){
-//            menuSize-=1;
-//            menu[index] = null;
-//            return true;
-//        }
-        for(int i = index; i < menuSize; i++){
-            menu[i] = menu[i-1];
+        if (index == -1) {
+            return false;
         }
-        menu[menuSize--] = null;
+
+        for (int i = index; i < menuSize - 1; i++) {
+            menu[i] = menu[i + 1];
+        }
+        menu[menuSize - 1] = null;
+        menuSize--;
         return true;
     }
 
@@ -67,7 +66,7 @@ public class Cafe {
         }
         Product[] p = new Product[counter];
         int idx = 0;
-        for(int i = 0; i < counter; i++){
+        for(int i = 0; i < menuSize; i++){
             if(menu[i].category().equalsIgnoreCase(category)){
                 p[idx++] = menu[i];
             }
@@ -76,22 +75,22 @@ public class Cafe {
     }
 
     public void sortMenuByPrice(){
-        for(int i = 1; i<menuSize-2; i++){
+        for(int i = 1; i<menuSize; i++){
             Product key = menu[i];
-            int j = i+1;
-            while(j > 1 && menu[j].price() > key.price()){
-                menu[j] = menu[j+1];
-                --j;
+            int j = i-1;
+            while(j >= 0 && menu[j].price() > key.price()){
+                menu[j+1] = menu[j];
+                j--;
             }
             menu[j+1] = key;
         }
     }
 
     public void displayMenu(){
-        System.out.println(name.toUpperCase());
+        System.out.println("=== MENU: "+name.toUpperCase()+" ===");
+        System.out.println();
         for(int i = 0; i < menuSize; i++){
-            System.out.println(menu[i].formatted());
-            System.out.println();
+            System.out.println((i+1)+". "+menu[i].formatted()+"\n");
         }
     }
 
@@ -111,16 +110,16 @@ public class Cafe {
 
     public Order[] getOrdersByCustomer(String customerName){
         int count = 0;
-        for(int i = 0; i < orderCount-1; i++){
-            if(orders[i].getCustomer().name().equalsIgnoreCase(customerName)){
+        for (int i = 0; i < orderCount; i++) {
+            if (orders[i].getCustomer().name().equalsIgnoreCase(customerName)) {
                 count++;
             }
         }
 
         Order[] newOrders = new Order[count];
         int idx = 0;
-        for(int i = 0; i < count; i++){
-            if(orders[i].getCustomer().name().equalsIgnoreCase(customerName)){
+        for (int i = 0; i < orderCount; i++) {
+            if (orders[i].getCustomer().name().equalsIgnoreCase(customerName)) {
                 newOrders[idx++] = orders[i];
             }
         }
@@ -132,7 +131,7 @@ public class Cafe {
         Order temp;
         for(int i = 0; i < orderCount; i++){
             for(int j = 0; j < i+1; j++){
-                if(orders[j].calculateTotal() < orders[i].calculateTotal()){
+                if(orders[j].calculateTotal() > orders[i].calculateTotal()){
                     temp = orders[i];
                     orders[i] = orders[j];
                     orders[j] = temp;
@@ -166,7 +165,7 @@ public class Cafe {
         private final int count;
 
         public Statistics(Order[] orders, int count){
-            if(orders == null || count > 0){
+            if(orders == null || count < 0){
                 throw new IllegalArgumentException("No orders to analyze");
             }
             this.orders = orders;
@@ -216,7 +215,7 @@ public class Cafe {
         public String summary(){
             StringBuilder sb = new StringBuilder();
             sb.append("=== Statistics ===")
-                    .append(String.format("Number of orders: %d\n", count))
+                    .append(String.format("\nNumber of orders: %d\n", count))
                     .append(String.format("Units sold: %d\n", totalItemsSold()))
                     .append(String.format("Total revenue: %.2f PLN\n", totalRevenue()))
                     .append(String.format("Average value: %.2f PLN\n", averageOrderValue()))
@@ -242,7 +241,7 @@ public class Cafe {
             StringBuilder sb = new StringBuilder();
             String sep = "=".repeat(50);
             sb.append(sep)
-                    .append("DAILY REPORT: "+name)
+                    .append("\nDAILY REPORT: "+name)
                     .append("\nDate: "+reportDate)
                     .append("\n"+sep)
                     .append("\n")
@@ -252,24 +251,25 @@ public class Cafe {
 
             if(orderCount>0){
                 sb.append("--- Order list---\n");
-                for(int i = 0; i < orderCount; i++){
-                    sb.append(String.format(
-                            "#%d | %s          |  %.2f PLN | %d units",
-                            orders[i].getId(),
-                            orders[i].getCustomer().name(),
-                            orders[i].calculateTotal(),
-                            orders[i].getItemCount()
-                        )
-                    );
+                for (int i = 0; i < orderCount; i++) {
+                    Order order = orders[i];
+                    sb.append(String.format("#%s | %s     | %.2f PLN | %d units %n",
+                            order.getId(),
+                            order.getCustomer().name(),
+                            order.calculateTotal(),
+                            order.getItemCount()));
                 }
                 sb.append("\n")
-                        .append("Total revenue: "+ stats.totalRevenue())
-                        .append("\nAverage value: "+stats.averageOrderValue())
+                        .append(String.format("Total revenue: %.2f PLN %n",stats.totalRevenue()))
+                        .append(String.format("Average value: %.2f PLN %n", stats.averageOrderValue()))
                         .append("\n")
                         .append(sep)
                         .append("\n");
             }
-
+            else {
+                sb.append("No orders available.\n");
+            }
+            sb.append("\n").append(sep).append("\n");
             return sb.toString();
         }
     }
