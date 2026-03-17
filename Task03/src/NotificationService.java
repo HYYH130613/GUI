@@ -169,6 +169,7 @@ public
             if(filters[i].accept(message) == false) {
                 String reason = "reason";
                 System.out.println("Message has been blocked");
+
                 for(int j = 0; j<channelCount; j++) {
                     Result res = new Result(
                             false,
@@ -178,6 +179,11 @@ public
                     );
                     history.add(res);
                 }
+
+                for(int k = 0; k<listinerCount; k++) {
+                    listiners[k].onFailure(channels[k].getType(), message, reason );
+                }
+                return;
             }
         }
 

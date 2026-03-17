@@ -22,6 +22,9 @@ public
         });
 
 //TODO 09: NotificationFilter is @FunctionalInterface
+        service.addFIlter(msg -> !msg.isBlank());
+        service.addFIlter(msg -> msg.length()<=200);
+        service.addFIlter(msg -> msg.toLowerCase().contains("spam"));
 
 //TODO 05
         service.addListiner(new NotificationListiner(){
