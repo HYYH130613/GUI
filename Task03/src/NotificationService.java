@@ -1,7 +1,7 @@
 import java.time.LocalDateTime;
 
 public
-    class NotificationService {
+class NotificationService {
 
     @FunctionalInterface
     public interface ResultFilter {
@@ -29,11 +29,25 @@ public
             this.timestamp = LocalDateTime.now();
         }
 
-        public boolean isSuccess()         { return success; }
-        public String getChannel()         { return channel; }
-        public String getMessage()         { return message; }
-        public String getFailReason()      { return failReason; }
-        public LocalDateTime getTimestamp() { return timestamp; }
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public String getChannel() {
+            return channel;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public String getFailReason() {
+            return failReason;
+        }
+
+        public LocalDateTime getTimestamp() {
+            return timestamp;
+        }
 
         @Override
         public String toString() {
@@ -109,12 +123,12 @@ public
     private Notification[] channels = new Notification[10];
     private int channelCount = 0;
 
-//TODO 02
+    //TODO 02
     private NotificationListiner[] listiners = new NotificationListiner[10];
     private int listinerCount = 0;
 
-//TODO 06
-    NotificationFilter[] filters = new NotificationFilter[10];
+    //TODO 06
+    private NotificationFilter[] filters = new NotificationFilter[10];
     private int filterCount = 0;
 
     private final History history = new History();
@@ -134,9 +148,9 @@ public
         channels[channelCount++] = channel;
     }
 
-//TODO 03
-    public void addListiner(NotificationListiner listiner){
-        if(listinerCount == listiners.length) {
+    //TODO 03
+    public void addListener(NotificationListiner listiner) {
+        if (listinerCount == listiners.length) {
             NotificationListiner[] temp = new NotificationListiner[listiners.length * 2];
             for (int i = 0; i < listiners.length; i++) {
                 temp[i] = listiners[i];
@@ -148,9 +162,9 @@ public
 
     }
 
-//TODO 07
-    void addFIlter(NotificationFilter filter){
-        if(filterCount == filters.length) {
+    //TODO 07
+    void addFilter(NotificationFilter filter) {
+        if (filterCount == filters.length) {
             NotificationFilter[] temp = new NotificationFilter[filters.length * 2];
             for (int i = 0; i < filters.length; i++) {
                 temp[i] = filters[i];
@@ -161,42 +175,37 @@ public
     }
 
     public void sendAll(String message) {
-
         System.out.println("\nSending: \"" + message + "\"");
 
-//TODO 08
-        for(int i=0; i<filterCount; i++) {
-            if(filters[i].accept(message) == false) {
-                String reason = "reason";
-                System.out.println("Message has been blocked");
+        for (int i = 0; i < filterCount; i++) {
+            if (!filters[i].accept(message)) {
+                String reason = "Message rejected by filter";
+                System.out.println("BLOCKED: " + reason);
 
-                for(int j = 0; j<channelCount; j++) {
+                for (int c = 0; c < channelCount; c++) {
                     Result res = new Result(
                             false,
-                            channels[j].getType(),
+                            channels[c].getType(),
                             message,
                             reason
                     );
                     history.add(res);
-                }
 
-                for(int k = 0; k<listinerCount; k++) {
-                    listiners[k].onFailure(channels[k].getType(), message, reason );
+                    for (int j = 0; j < listinerCount; j++) {
+                        listiners[j].onFailure(channels[c].getType(), message, reason);
+                    }
                 }
                 return;
             }
         }
 
-
         for (int c = 0; c < channelCount; c++) {
             channels[c].send(message);
             history.add(new Result(true, channels[c].getType(), message, null));
 
-//TODO 04
-            for(int i = 0; i<listinerCount; i++) {
+            for (int i = 0; i < listinerCount; i++) {
                 listiners[i].onSuccess(channels[c].getType(), message);
             }
-
         }
     }
 
@@ -208,7 +217,27 @@ public
         return history.getFiltered(result -> result.isSuccess());
     }
 
-//TODO 10
+    //TODO 10
+    public Result[] getByChannel(String channel) {
+        return history.getFiltered(res -> res.getChannel().equals(channel));
+    }
 
-//TODO 12
+    //TODO 12
+    public static Result[] sort(Result[] results, ResultComparator comparator) {
+        Result[] sorted = new Result[results.length];
+        for (int i = 0; i < results.length; i++) {
+            sorted[i] = results[i];
+        }
+
+        for (int i = 0; i < sorted.length - 1; i++) {
+            for (int j = 0; j < sorted.length - 1 - i; j++) {
+                if (comparator.compare(sorted[j], sorted[j + 1]) > 0) {
+                    Result temp = sorted[j];
+                    sorted[j] = sorted[j + 1];
+                    sorted[j + 1] = temp;
+                }
+            }
+        }
+        return sorted;
+    }
 }
